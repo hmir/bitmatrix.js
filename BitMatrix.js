@@ -1,5 +1,5 @@
 class Bit {
-    constructor(val, x, y, context, fadingIn=true, fadingOut=false, fadeDelta=0.1, opacity=1) {
+    constructor(val, x, y, context, fadingIn=true, fadingOut=false, fadeDelta=0.01, opacity=0) {
 
         this.x = x;
         this.y = y;
@@ -67,7 +67,7 @@ class BitMatrix {
 
     start() {
         this._buildMatrix();
-        this._draw();
+        this._requestDraw();
     }
 
     _fixCanvasDPI() {
@@ -111,6 +111,16 @@ class BitMatrix {
                 currentBit.draw();
             }
         }
+        
+        this._requestDraw();
+
+    }
+
+    _requestDraw() {
+        var ref = this;
+        window.requestAnimationFrame(() => {
+            ref._draw();
+        });
     }
 
     _generateRandomBit() {

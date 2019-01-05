@@ -1,16 +1,16 @@
 class Bit {
-    constructor(val, x, y, context, fadingIn=true, fadingOut=false, fadeDelta=0.05, opacity=0) {
+    constructor(val, x, y, context, fadeDelta=0.05, opacity=0) {
 
         this.x = x;
         this.y = y;
 
         this.context = context;
 
-        this.fadingIn = fadingIn;
-        this.fadingOut = fadingOut;
-        this.fadeDelta = fadeDelta;
+        this.fadingIn = false;
+        this.fadingOut = false;
+        this.animating = false;
 
-        this.animating = fadingIn && opacity < 1 || fadingOut && opacity > 0;
+        this.fadeDelta = fadeDelta;
 
         this.val = val;
         this.opacity = opacity;
@@ -115,7 +115,7 @@ class BitMatrix {
             for(let j = 0; j < numCols; j++) {
                 let x = j * widthSpacing + marginLeft;
                 let y = i * heightSpacing + marginTop;
-                this.matrix[i].push(new Bit(this._generateRandomBit(), x, y, this.context, this._flipCoin()));
+                this.matrix[i].push(new Bit(this._generateRandomBit(), x, y, this.context));
             }
         }
     }

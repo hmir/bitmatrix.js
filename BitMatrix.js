@@ -59,37 +59,28 @@ class Bit {
 }
 
 class BitMatrix {
-    constructor(canvas, color, fontFamily='Lucida Console', fontSizePx=12, fontWeight='normal') {
+    constructor(canvas, width, height, color, fontFamily='monospace', fontSizePx=12, fontWeight='normal') {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
 
-        this._fixCanvasDPI();
+        this._numRows = 0;
+        this._numCols = 0;
 
-        this.context.fillStyle = color;
+        this._matrix = [];
 
-        this.fontFamily = fontFamily;
-        this.fontSizePx = fontSizePx;
-        this.fontWeight = fontWeight;
-
-        this.context.font = fontWeight + ' ' + fontSizePx + 'px ' + fontFamily;
+        this._setupCanvas(width, height, color, fontFamily, fontSizePx, fontWeight);
 
         this.requestAnimFrame = null;
 
-        this.matrix = [];
-
-        canvas.addEventListener('resize', () => {
-
-        });
+        // let ref = this;
+        // canvas.addEventListener('resize', () => {
+        //     ref.resizeCanvas();
+        // });
     }
 
-    start() {
-        this._buildMatrix();
-        this._requestDraw();
-    }
-
-    _fixCanvasDPI() {
-        let width = this.canvas.width;
-        let height = this.canvas.height;
+    _setupCanvas(width, height, color, fontFamily, fontSizePx, fontWeight) {
+        this.width = width;
+        this.height = height;
 
         this.canvas.width = width * window.devicePixelRatio;
         this.canvas.height = height * window.devicePixelRatio;
@@ -97,34 +88,96 @@ class BitMatrix {
         this.canvas.style.width = width + 'px';
         this.canvas.style.height = height + 'px';
 
+        this.context.fillStyle = color;
+
+        this.fontFamily = fontFamily;
+        this.fontSizePx = fontSizePx;
+        this.fontWeight = fontWeight;
+
+        this._widthSpacing = (this.fontSizePx + 5) * 1;
+        this._heightSpacing = (this.fontSizePx + 5) * 1;
+
+        this._marginLeft = this._widthSpacing/2;
+        this._marginTop = this._heightSpacing/2;
+
+        this.context.font = fontWeight + ' ' + fontSizePx + 'px ' + fontFamily;
         this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
+    resizeCanvas(width, height) {
+        this._setupCanvas(width, height, this.context.fillStyle, this.fontFamily, this.fontSizePx, this.fontWeight);
+        this._resizeMatrix();
+    }
+
+    start() {
+        this._requestDraw();
+        this._buildMatrix();
+    }
+
     _buildMatrix() {
-        let widthSpacing = (this.fontSizePx + 5) * 1;
-        let heightSpacing = (this.fontSizePx + 5) * 1;
+        this._numRows = parseInt(this.height/this._heightSpacing);
+        this._numCols = parseInt(this.width/this._widthSpacing);
 
-        let marginLeft = widthSpacing/2;
-        let marginTop = heightSpacing/2;
+        for(let i = 0; i < this._numRows; i++) {
+            this._addRowToMatrix(i);
+        }
+    }
 
-        let numRows = parseInt(this.canvas.style.height.slice(0, -2)/widthSpacing);
-        let numCols = parseInt(this.canvas.style.width.slice(0, -2)/heightSpacing);
+    _addRowToMatrix(i) {
+        this._matrix.push([]);
+        for(let j = 0; j < this._numCols; j++) {
+            this._addBitToMatrix(i, j);
+        }
+    }
 
-        for(let i = 0; i < numRows; i++) {
-            this.matrix.push([]);
-            for(let j = 0; j < numCols; j++) {
-                let x = j * widthSpacing + marginLeft;
-                let y = i * heightSpacing + marginTop;
-                this.matrix[i].push(new Bit(this._generateRandomBit(), x, y, this.context));
+    _addBitToMatrix(i, j) {
+        let x = j * this._widthSpacing + this._marginLeft;
+        let y = i * this._heightSpacing + this._marginTop;
+        this._matrix[i].push(new Bit(this._generateRandomBit(), x, y, this.context));
+    }
+
+    _resizeMatrix() {
+        // TODO deal with unbuilt matrix
+        let newNumRows = parseInt(this.height/this._heightSpacing);
+        let newNumCols = parseInt(this.width/this._widthSpacing);
+
+        let numRowsDelta = newNumRows - this._numRows;
+        let numColsDelta = newNumCols - this._numCols;
+
+        if (numRowsDelta < 0) {
+            this._matrix.splice(numRowsDelta, Math.abs(numRowsDelta));
+        }
+        
+        else if (numRowsDelta > 0) {
+            for (let i = this._numRows; i < this._numRows + numRowsDelta; i++) {
+                this._addRowToMatrix(i);
             }
         }
+
+        if (numColsDelta < 0) {
+            for (let i = 0; i < newNumRows; i++) {
+                this._matrix[i].splice(numColsDelta, Math.abs(numColsDelta));
+            }
+        }
+
+        else if (numColsDelta > 0) {
+            for (let i = 0; i < newNumRows; i++) {
+                for (let j = this._numCols; j < this._numCols + numColsDelta; j++) {
+                    this._addBitToMatrix(i, j);
+                }
+            }
+        }
+
+        this._numRows = newNumRows;
+        this._numCols = newNumCols;
+
     }
 
     _draw() {
         this.context.clearRect(0,0, this.canvas.width, this.canvas.height);
-        for(let i = 0; i < this.matrix.length; i++) {
-            for(let j = 0; j < this.matrix[i].length; j++) {
-                let currentBit = this.matrix[i][j];
+        for(let i = 0; i < this._matrix.length; i++) {
+            for(let j = 0; j < this._matrix[i].length; j++) {
+                let currentBit = this._matrix[i][j];
                 if (!currentBit.animating && Math.random() < .01) {
                     currentBit.triggerAnimation();
                 }
@@ -145,9 +198,5 @@ class BitMatrix {
 
     _generateRandomBit() {
         return Math.floor(Math.random() * 2);
-    }
-
-    _flipCoin() {
-        return this._generateRandomBit() === 1;
     }
 }

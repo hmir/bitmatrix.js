@@ -1,19 +1,21 @@
 class Bit {
-    constructor(val, x, y, context, fadeDelta=0.05, opacity=0) {
+    constructor(context, val, x, y, minOpacity=0, maxOpacity=1, fadeDelta=0.05) {
+
+        this.context = context;
+        this.val = val;
 
         this.x = x;
         this.y = y;
-
-        this.context = context;
 
         this.fadingIn = false;
         this.fadingOut = false;
         this.animating = false;
 
-        this.fadeDelta = fadeDelta;
+        this.minOpacity = minOpacity;
+        this.maxOpacity = maxOpacity;
+        this.opacity = minOpacity;
 
-        this.val = val;
-        this.opacity = opacity;
+        this.fadeDelta = fadeDelta;
     }
 
     triggerAnimation() {
@@ -133,7 +135,7 @@ class BitMatrix {
     _addBitToMatrix(i, j) {
         let x = j * this._widthSpacing + this._marginLeft;
         let y = i * this._heightSpacing + this._marginTop;
-        this._matrix[i].push(new Bit(this._generateRandomBit(), x, y, this.context));
+        this._matrix[i].push(new Bit(this.context, this._generateRandomBit(), x, y));
     }
 
     _resizeMatrix() {

@@ -61,7 +61,7 @@ class Bit {
 }
 
 class BitMatrix {
-    constructor(canvas, width, height, color, fontFamily='monospace', fontSizePx=12, fontWeight='normal') {
+    constructor(canvas, width, height, color, minBitOpacity=0, maxBitOpacity=1, bitFadeDelta=0.05, fontFamily='monospace', fontSizePx=12, fontWeight='normal') {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
 
@@ -69,6 +69,10 @@ class BitMatrix {
         this._numCols = 0;
 
         this._matrix = [];
+
+        this.minBitOpacity = minBitOpacity;
+        this.maxBitOpacity = maxBitOpacity;
+        this.bitFadeDelta = bitFadeDelta;
 
         this._setupCanvas(width, height, color, fontFamily, fontSizePx, fontWeight);
 
@@ -130,7 +134,10 @@ class BitMatrix {
     _addBitToMatrix(i, j) {
         let x = j * this._widthSpacing + this._marginLeft;
         let y = i * this._heightSpacing + this._marginTop;
-        this._matrix[i].push(new Bit(this.context, this._generateRandomBit(), x, y));
+        let newBit = new Bit(
+            this.context, this._generateRandomBit(), x, y, this.minBitOpacity, this.maxBitOpacity, this.bitFadeDelta
+        );
+        this._matrix[i].push(newBit);
     }
 
     _resizeMatrix() {

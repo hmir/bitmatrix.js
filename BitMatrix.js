@@ -73,11 +73,6 @@ class BitMatrix {
         this._setupCanvas(width, height, color, fontFamily, fontSizePx, fontWeight);
 
         this.requestAnimFrame = null;
-
-        // let ref = this;
-        // canvas.addEventListener('resize', () => {
-        //     ref.resizeCanvas();
-        // });
     }
 
     _setupCanvas(width, height, color, fontFamily, fontSizePx, fontWeight) {
@@ -192,7 +187,7 @@ class BitMatrix {
     }
 
     _requestDraw() {
-        var ref = this;
+        let ref = this;
         window.requestAnimationFrame(() => {
             ref._draw();
         });

@@ -23,7 +23,7 @@ class Bit {
             return;
         }
 
-        if (this.opacity === 1) {
+        if (this.opacity === this.maxOpacity) {
             this.fadingOut = true;
             this.fadingIn = false;
         }
@@ -36,19 +36,19 @@ class Bit {
     }
 
     animateFade() {
-        if (this.fadingIn && this.opacity < 1) {
+        if (this.fadingIn && this.opacity < this.maxOpacity) {
             this.opacity += this.fadeDelta;
         }
-        else if(this.fadingOut && this.opacity > 0) {
+        else if(this.fadingOut && this.opacity > this.minOpacity) {
             this.opacity -= this.fadeDelta;
         }
 
-        if (this.opacity <= 0) {
-            this.opacity = 0;
+        if (this.opacity <= this.minOpacity) {
+            this.opacity = this.minOpacity;
             this.animating = false;
         }
-        else if(this.opacity >= 1) {
-            this.opacity = 1;
+        else if(this.opacity >= this.maxOpacity) {
+            this.opacity = this.maxOpacity;
             this.animating = false;
         }
     }

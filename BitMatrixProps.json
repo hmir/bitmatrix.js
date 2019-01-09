@@ -1,0 +1,17 @@
+{
+  "fadeOptions": {
+    "minBitOpacity": 0,
+    "maxBitOpacity": 1,
+    "bitFadeDelta": 0.05
+  },
+  "textOptions": {
+    "textColor": "white",
+    "fontFamily": "monospace",
+    "fontSizePx": 12,
+    "fontWeight": "normal"
+  },
+  "padding": {
+    "horizontal": 5,
+    "vertical": 5
+  }
+}

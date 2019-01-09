@@ -7,9 +7,9 @@ class Bit {
         this.x = x;
         this.y = y;
 
-        this.fadingIn = false;
+        this.fadingIn = true;
         this.fadingOut = false;
-        this.animating = false;
+        this.animating = true;
 
         this.minOpacity = minOpacity;
         this.maxOpacity = maxOpacity;
@@ -61,25 +61,22 @@ class Bit {
 }
 
 class BitMatrix {
-    constructor(canvas, width, height, color, minBitOpacity=0, maxBitOpacity=1, bitFadeDelta=0.05, fontFamily='monospace', fontSizePx=12, fontWeight='normal', horizontalPaddingPx=5, verticalPaddingPx=5) {
+    constructor(canvas, width, height, props) {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
 
+        for(let key in props) {
+            this[key] = props[key];
+        }
+
         this._numRows = 0;
         this._numCols = 0;
-
         this._matrix = [];
 
-        this.minBitOpacity = minBitOpacity;
-        this.maxBitOpacity = maxBitOpacity;
-        this.bitFadeDelta = bitFadeDelta;
-
-        this._setupCanvas(width, height, color, fontFamily, fontSizePx, fontWeight, horizontalPaddingPx, verticalPaddingPx);
-
-        this.requestAnimFrame = null;
+        this._setupCanvas(width, height, this.textOptions, this.padding)
     }
 
-    _setupCanvas(width, height, color, fontFamily, fontSizePx, fontWeight, horizontalPaddingPx, verticalPaddingPx) {
+    _setupCanvas(width, height, textOptions, padding) {
         this.width = width;
         this.height = height;
 
@@ -89,27 +86,27 @@ class BitMatrix {
         this.canvas.style.width = width + 'px';
         this.canvas.style.height = height + 'px';
 
-        this.context.fillStyle = color;
+        this.context.fillStyle = textOptions.textColor;
 
-        this.fontFamily = fontFamily;
-        this.fontSizePx = fontSizePx;
-        this.fontWeight = fontWeight;
+        this.textOptions.fontFamily = textOptions.fontFamily;
+        this.textOptions.fontSizePx = textOptions.fontSizePx;
+        this.textOptions.fontWeight = textOptions.fontWeight;
 
-        this.horizontalPaddingPx = horizontalPaddingPx;
-        this.verticalPaddingPx = verticalPaddingPx;
+        this.padding.horizontal = padding.horizontal;
+        this.padding.vertical = padding.vertical;
 
-        this._widthSpacing = this.fontSizePx + horizontalPaddingPx;
-        this._heightSpacing = this.fontSizePx + verticalPaddingPx;
+        this._widthSpacing = this.textOptions.fontSizePx + this.padding.horizontal;
+        this._heightSpacing = this.textOptions.fontSizePx + this.padding.vertical;
 
         this._marginLeft = this._widthSpacing/2;
         this._marginTop = this._heightSpacing/2;
 
-        this.context.font = fontWeight + ' ' + fontSizePx + 'px ' + fontFamily;
+        this.context.font = this.textOptions.fontWeight + ' ' + this.textOptions.fontSizePx + 'px ' + this.textOptions.fontFamily;
         this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
     resizeCanvas(width, height) {
-        this._setupCanvas(width, height, this.context.fillStyle, this.fontFamily, this.fontSizePx, this.fontWeight, this.horizontalPaddingPx, this.verticalPaddingPx);
+        this._setupCanvas(width, height, this.textOptions, this.padding);
         this._resizeMatrix();
     }
 
@@ -138,7 +135,7 @@ class BitMatrix {
         let x = j * this._widthSpacing + this._marginLeft;
         let y = i * this._heightSpacing + this._marginTop;
         let newBit = new Bit(
-            this.context, this._generateRandomBit(), x, y, this.minBitOpacity, this.maxBitOpacity, this.bitFadeDelta
+            this.context, this._generateRandomBit(), x, y, this.fadeOptions.minBitOpacity, this.fadeOptions.maxBitOpacity, this.fadeOptions.bitFadeDelta
         );
         this._matrix[i].push(newBit);
     }

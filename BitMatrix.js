@@ -4,7 +4,6 @@ function getBool(trueProb) {
 
 class Bit {
     constructor(context, val, x, y, fadeOptions) {
-
         this.context = context;
         this.val = val;
 

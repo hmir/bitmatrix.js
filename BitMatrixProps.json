@@ -2,7 +2,18 @@
   "fadeOptions": {
     "minBitOpacity": 0,
     "maxBitOpacity": 1,
-    "bitFadeDelta": 0.05
+    "bitFadeDelta": 0.05,
+    "fadeInProb": 0.33,
+    "fadeInProbIncrement": 0.0001, 
+    "fadeOutProb": 0.33, 
+    "fadeOutProbIncrement": 0.001
+  },
+  "bitValueOptions": {
+    "initialZeroProb": 0.5,  
+    "switchToZeroProb": 0.01, 
+    "switchToOneProb": 0.01,
+    "onlySwitchOnMinOpacity": false, 
+    "onlySwitchOnMaxOpacity": true
   },
   "textOptions": {
     "textColor": "white",

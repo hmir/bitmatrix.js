@@ -1,5 +1,9 @@
+function getBool(trueProb) {
+    return Math.random() < trueProb;
+}
+
 class Bit {
-    constructor(context, val, x, y, minOpacity=0, maxOpacity=1, fadeDelta=0.05) {
+    constructor(context, val, x, y, fadeOptions) {
 
         this.context = context;
         this.val = val;
@@ -11,11 +15,37 @@ class Bit {
         this.fadingOut = false;
         this.animating = false;
 
-        this.minOpacity = minOpacity;
-        this.maxOpacity = maxOpacity;
-        this.opacity = minOpacity;
+        this.minOpacity = fadeOptions.minBitOpacity;
+        this.maxOpacity = fadeOptions.maxBitOpacity;
+        this.opacity = fadeOptions.minBitOpacity;
 
-        this.fadeDelta = fadeDelta;
+        this.fadeDelta = fadeOptions.bitFadeDelta;
+
+        this.fadeInProb = fadeOptions.fadeInProb;
+        this.fadeInProbIncrement = fadeOptions.fadeInProbIncrement;
+        this.fadeOutProb = fadeOptions.fadeOutProb;
+        this.fadeOutProbIncrement = fadeOptions.fadeOutProbIncrement;
+
+        this._currentFadeInProb = 0;
+        this._currentFadeOutProb = 0;
+    }
+
+    _incrementFadeProbs() {
+        if (this._currentFadeInProb < this.fadeInProb) {
+            this._currentFadeInProb += this.fadeInProbIncrement;
+        }
+
+        if (this._currentFadeOutProb < this.fadeOutProb) {
+            this._currentFadeOutProb += this.fadeOutProbIncrement;
+        }
+
+        if (this._currentFadeInProb > this.fadeInProb) {
+            this._currentFadeInProb = this.fadeInProb;
+        }
+
+        if (this._currentFadeOutProb > this.fadeOutProb) { 
+            this._currentFadeOutProb = this.fadeOutProb;
+        }
     }
 
     triggerAnimation() {
@@ -58,9 +88,17 @@ class Bit {
     }
 
     draw() {
+
+        if (this.opacity === this.minOpacity && getBool(this._currentFadeInProb) || 
+            this.opacity === this.maxOpacity && getBool(this._currentFadeOutProb)) {
+            this.triggerAnimation();
+        }
+
         this.animateFade();
         this.context.globalAlpha = this.opacity;
         this.context.fillText(this.val, this.x, this.y);
+
+        this._incrementFadeProbs();
     }
 }
 
@@ -141,10 +179,7 @@ class BitMatrix {
     _addBitToMatrix(i, j) {
         let x = j * this._widthSpacing + this._marginLeft;
         let y = i * this._heightSpacing + this._marginTop;
-        let newBit = new Bit(
-            this.context, this._generateRandomBit(), x, y, this.fadeOptions.minBitOpacity, 
-            this.fadeOptions.maxBitOpacity, this.fadeOptions.bitFadeDelta
-        );
+        let newBit = new Bit(this.context, this._generateRandomBit(), x, y, this.fadeOptions);
         this._matrix[i].push(newBit);
     }
 
@@ -197,43 +232,18 @@ class BitMatrix {
                 if (!(this.bitValueOptions.onlySwitchOnMinOpacity && !isAtMinOpacity) && 
                     !(this.bitValueOptions.onlySwitchOnMaxOpacity && !isAtMaxOpacity)) {
 
-                    if (currentBit.val === 0 && this._getBool(this.bitValueOptions.switchToZeroProb) || 
-                        currentBit.val === 1 && this._getBool(this.bitValueOptions.switchToOneProb)) {
+                    if (currentBit.val === 0 && getBool(this.bitValueOptions.switchToZeroProb) || 
+                        currentBit.val === 1 && getBool(this.bitValueOptions.switchToOneProb)) {
                         currentBit.switchBitVal();
                     }
-                }
-                
-                if (isAtMinOpacity && this._getBool(this._currentFadeInProb) || 
-                    isAtMaxOpacity && this._getBool(this._currentFadeOutProb)) {
-
-                    currentBit.triggerAnimation();
                 }
 
                 currentBit.draw();
             }
         }
-        
-        this._incrementFadeProbs();
+
         this._requestDraw();
 
-    }
-
-    _incrementFadeProbs() {
-        if (this._currentFadeInProb < this.fadeOptions.fadeInProb) {
-            this._currentFadeInProb += this.fadeOptions.fadeInProbIncrement;
-        }
-
-        if (this._currentFadeOutProb < this.fadeOptions.fadeOutProb) {
-            this._currentFadeOutProb += this.fadeOptions.fadeOutProbIncrement;
-        }
-
-        if (this._currentFadeInProb > this.fadeOptions.fadeInProb) {
-            this._currentFadeInProb = this.fadeOptions.fadeInProb;
-        }
-
-        if (this._currentFadeOutProb > this.fadeOptions.fadeOutProb) { 
-            this._currentFadeOutProb = this.fadeOptions.fadeOutProb;
-        }
     }
 
     _requestDraw() {
@@ -244,10 +254,6 @@ class BitMatrix {
     }
 
     _generateRandomBit() {
-        return this._getBool(this.bitValueOptions.initialZeroProb) ? 0 : 1;
-    }
-
-    _getBool(trueProb) {
-        return Math.random() < trueProb;
+        return getBool(this.bitValueOptions.initialZeroProb) ? 0 : 1;
     }
 }

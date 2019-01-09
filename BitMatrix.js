@@ -35,6 +35,10 @@ class Bit {
         this.animating = true;
     }
 
+    switchBitVal() {
+        this.val = this.val === 1 ? 0 : 1;
+    }
+
     animateFade() {
         if (this.fadingIn && this.opacity < this.maxOpacity) {
             this.opacity += this.fadeDelta;
@@ -189,6 +193,15 @@ class BitMatrix {
 
                 let isAtMinOpacity = currentBit.opacity === this.fadeOptions.minBitOpacity;
                 let isAtMaxOpacity = currentBit.opacity === this.fadeOptions.maxBitOpacity;
+
+                if (!(this.bitValueOptions.onlySwitchOnMinOpacity && !isAtMinOpacity) && 
+                    !(this.bitValueOptions.onlySwitchOnMaxOpacity && !isAtMaxOpacity)) {
+
+                    if (currentBit.val === 0 && this._getBool(this.bitValueOptions.switchToZeroProb) || 
+                        currentBit.val === 1 && this._getBool(this.bitValueOptions.switchToOneProb)) {
+                        currentBit.switchBitVal();
+                    }
+                }
                 
                 if (isAtMinOpacity && this._getBool(this._currentFadeInProb) || 
                     isAtMaxOpacity && this._getBool(this._currentFadeOutProb)) {

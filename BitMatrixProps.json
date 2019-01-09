@@ -10,8 +10,8 @@
   },
   "bitValueOptions": {
     "initialZeroProb": 0.5,  
-    "switchToZeroProb": 0.01, 
-    "switchToOneProb": 0.01,
+    "switchToZeroProb": 0.1, 
+    "switchToOneProb": 0.1,
     "onlySwitchOnMinOpacity": false, 
     "onlySwitchOnMaxOpacity": true
   },

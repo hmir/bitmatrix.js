@@ -27,6 +27,8 @@ class Bit {
 
         this._currentFadeInProb = 0;
         this._currentFadeOutProb = 0;
+
+        this.switched = false;
     }
 
     _incrementFadeProbs() {
@@ -62,10 +64,12 @@ class Bit {
         }
 
         this.animating = true;
+        this.switched = false;
     }
 
     switchBitVal() {
         this.val = this.val === 1 ? 0 : 1;
+        this.switched = true;
     }
 
     animateFade() {
@@ -87,7 +91,6 @@ class Bit {
     }
 
     draw() {
-
         if (this.opacity === this.minOpacity && getBool(this._currentFadeInProb) || 
             this.opacity === this.maxOpacity && getBool(this._currentFadeOutProb)) {
             this.triggerAnimation();
@@ -229,7 +232,9 @@ class BitMatrix {
                 let isAtMaxOpacity = currentBit.opacity === this.fadeOptions.maxBitOpacity;
 
                 if (!(this.bitValueOptions.onlySwitchOnMinOpacity && !isAtMinOpacity) && 
-                    !(this.bitValueOptions.onlySwitchOnMaxOpacity && !isAtMaxOpacity)) {
+                    !(this.bitValueOptions.onlySwitchOnMaxOpacity && !isAtMaxOpacity) &&
+                    !(this.bitValueOptions.onlySwitchOnceAtMinOpacity && (!isAtMinOpacity || currentBit.switched)) &&
+                    !(this.bitValueOptions.onlySwitchOnceAtMaxOpacity && (!isAtMaxOpacity || currentBit.switched))) {
 
                     if (currentBit.val === 0 && getBool(this.bitValueOptions.switchToZeroProb) || 
                         currentBit.val === 1 && getBool(this.bitValueOptions.switchToOneProb)) {

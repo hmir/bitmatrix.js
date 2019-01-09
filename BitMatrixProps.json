@@ -13,7 +13,9 @@
     "switchToZeroProb": 0.1, 
     "switchToOneProb": 0.1,
     "onlySwitchOnMinOpacity": false, 
-    "onlySwitchOnMaxOpacity": true
+    "onlySwitchOnMaxOpacity": true,
+    "onlySwitchOnceAtMinOpacity": false,
+    "onlySwitchOnceAtMaxOpacity": true
   },
   "textOptions": {
     "textColor": "white",

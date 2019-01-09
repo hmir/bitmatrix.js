@@ -120,6 +120,8 @@ class BitMatrix {
         this._numCols = 0;
         this._matrix = [];
 
+        this._matrixBuilt = false;
+
         this._setupCanvas(width, height, this.textOptions, this.padding)
     }
 
@@ -169,6 +171,8 @@ class BitMatrix {
         for(let i = 0; i < this._numRows; i++) {
             this._addRowToMatrix(i);
         }
+
+        this._matrixBuilt = true;
     }
 
     _addRowToMatrix(i) {
@@ -186,7 +190,10 @@ class BitMatrix {
     }
 
     _resizeMatrix() {
-        // TODO deal with unbuilt matrix
+        if (!this._matrixBuilt) {
+            return;
+        }
+
         let newNumRows = parseInt(this.height/this._heightSpacing);
         let newNumCols = parseInt(this.width/this._widthSpacing);
 

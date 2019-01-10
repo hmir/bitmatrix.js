@@ -7,13 +7,29 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="BitMatrix.js"></script>
         <script>
+            let bmatrix = null;
             function createMatrix() {
-                let b = new BitMatrix(document.getElementById('bitmatrix'), 'blue');
-                b.start();
+                $.getJSON("BitMatrixProps.json", (json) => {                    
+                    bmatrix = new BitMatrix(document.getElementById('bitmatrix'), window.innerWidth-5, window.innerHeight-5, json);
+                    bmatrix.start();
+                });
             }
+
+            window.addEventListener('resize', () => {
+                bmatrix.resizeCanvas(window.innerWidth, window.innerHeight);
+            });
         </script>
+        <style> 
+            html, body {
+                width:  100%;
+                height: 100%;
+                margin: 0px;
+                margin-top: 5px;
+                overflow: hidden;
+            }
+        </style>
     </head>
-    <body onLoad='createMatrix()' id='body'>
-        <canvas id="bitmatrix" width="500" height="500"></canvas>
+    <body onLoad="createMatrix()" bgcolor="#000000">
+        <canvas id="bitmatrix"></canvas>
     </body>
 </html>

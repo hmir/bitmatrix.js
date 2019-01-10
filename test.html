@@ -10,7 +10,7 @@
             let bmatrix = null;
             function createMatrix() {
                 $.getJSON("BitMatrixProps.json", (json) => {                    
-                    bmatrix = new BitMatrix(document.getElementById('bitmatrix'), window.innerWidth-5, window.innerHeight-5, json);
+                    bmatrix = new BitMatrix('matrix_container', window.innerWidth-5, window.innerHeight-5, json);
                     bmatrix.start();
                 });
             }
@@ -30,6 +30,6 @@
         </style>
     </head>
     <body onLoad="createMatrix()" bgcolor="#000000">
-        <canvas id="bitmatrix"></canvas>
+        <div id="matrix_container"></div>
     </body>
 </html>

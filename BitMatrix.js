@@ -134,9 +134,12 @@ class Bit {
 
 // contains the data for entire matrix drawn on the canvas
 class BitMatrix {
-    constructor(canvas, width, height, props) {
-        this.canvas = canvas; // canvas to be drawn on
-        this.context = canvas.getContext('2d'); // canvas context
+    constructor(containerId, width, height, props) {
+        this.canvas = document.createElement('canvas'); // canvas to be drawn on
+        this.context = this.canvas.getContext('2d'); // canvas context
+
+        // attach canvas to dom element with specified id
+        document.getElementById(containerId).appendChild(this.canvas);
 
         // add each key of props object as key of this object
         for(let key in props) {

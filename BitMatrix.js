@@ -134,12 +134,12 @@ class Bit {
 
 // contains the data for entire matrix drawn on the canvas
 class BitMatrix {
-    constructor(containerId, width, height, props) {
+    constructor(containerId, props) {
         this.canvas = document.createElement('canvas'); // canvas to be drawn on
         this.context = this.canvas.getContext('2d'); // canvas context
 
-        // attach canvas to dom element with specified id
-        document.getElementById(containerId).appendChild(this.canvas);
+        this.container = document.getElementById(containerId); // dom element with specified id
+        this.container.appendChild(this.canvas); // attach canvas to container
 
         // add each key of props object as key of this object
         for(let key in props) {
@@ -152,20 +152,20 @@ class BitMatrix {
 
         this._matrixBuilt = false; // set to true once _buildMatrix() is called
 
-        this._setupCanvas(width, height, this.textOptions, this.padding);
+        this._setupCanvas(this.textOptions, this.padding);
     }
 
     // sets canvas size, padding, and font
-    _setupCanvas(width, height, textOptions, padding) {
+    _setupCanvas(textOptions, padding) {
         // set canvas dimensions
-        this.width = width;
-        this.height = height;
+        this.width = this.container.clientWidth;
+        this.height = this.container.clientHeight;
 
         // insures support for HiDPI screens
-        this.canvas.width = width * window.devicePixelRatio;
-        this.canvas.height = height * window.devicePixelRatio;
-        this.canvas.style.width = width + 'px';
-        this.canvas.style.height = height + 'px';
+        this.canvas.width = this.width * window.devicePixelRatio;
+        this.canvas.height = this.height * window.devicePixelRatio;
+        this.canvas.style.width = this.width + 'px';
+        this.canvas.style.height = this.height + 'px';
 
         // set text color
         this.context.fillStyle = textOptions.textColor;
@@ -192,12 +192,6 @@ class BitMatrix {
 
         // this line is also necessary for supporting HiDPI screens
         this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
-    }
-
-    // change size of canvas
-    resizeCanvas(width, height) {
-        this._setupCanvas(width, height, this.textOptions, this.padding);
-        this._resizeMatrix();
     }
 
     // build matrix and start canvas animation
@@ -294,6 +288,12 @@ class BitMatrix {
 
     // draws matrix to context (should not be called directly, but rather invoked via _requestDraw())
     _draw() {
+        // resize canvas and matrix if container has changed size
+        if (this.container.clientWidth !== this.width || this.container.clientHeight !== this.height) {
+            this._setupCanvas(this.textOptions, this.padding);
+            this._resizeMatrix();
+        }
+
         // clear canvas context
         this.context.clearRect(0,0, this.canvas.width, this.canvas.height);
 

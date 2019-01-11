@@ -100,7 +100,7 @@ class Bit {
             this.opacity += this.fadeDelta;
         }
         // decrement opacity if fadingOut 
-        else if(this.fadingOut && this.opacity > this.minOpacity) {
+        else if (this.fadingOut && this.opacity > this.minOpacity) {
             this.opacity -= this.fadeDelta;
         }
 
@@ -110,7 +110,7 @@ class Bit {
             this.animating = false;
         }
         // set opacity to max opacity if it exceeds maxOpacity
-        else if(this.opacity >= this.maxOpacity) {
+        else if (this.opacity >= this.maxOpacity) {
             this.opacity = this.maxOpacity;
             this.animating = false;
         }
@@ -169,13 +169,13 @@ class BitMatrix {
         }
     }
 
-    // try to read in "file" as a json file and return data via callback
+    // try to read in file parameter as a json file and return data via callback
     _readJSONFile(file, callback) {
         let jsonFile = new XMLHttpRequest();
-        jsonFile.overrideMimeType("application/json");
-        jsonFile.open("GET", file, true);
+        jsonFile.overrideMimeType('application/json');
+        jsonFile.open('GET', file, true);
         jsonFile.onreadystatechange = function() {
-            if (jsonFile.readyState === 4 && jsonFile.status == "200") {
+            if (jsonFile.readyState === 4 && jsonFile.status == '200') {
                 callback(jsonFile.responseText);
             }
         }
@@ -184,7 +184,7 @@ class BitMatrix {
 
     // add each key of props as key of this object
     _addPropsToObject(props) {
-        for(let key in props) {
+        for (let key in props) {
             this[key] = props[key];
         }
     }
@@ -237,7 +237,7 @@ class BitMatrix {
         this._numCols = parseInt(this.width/this._widthSpacing);
 
         // initialize _matrix
-        for(let i = 0; i < this._numRows; i++) {
+        for (let i = 0; i < this._numRows; i++) {
             this._addRowToMatrix(i);
         }
 
@@ -249,7 +249,7 @@ class BitMatrix {
         this._matrix.push([]); // append empty array to _matrix
         
         // add Bit to new row for each column in the matrix
-        for(let j = 0; j < this._numCols; j++) {
+        for (let j = 0; j < this._numCols; j++) {
             this._addBitToMatrix(i, j);
         }
     }
@@ -328,8 +328,8 @@ class BitMatrix {
         this.context.clearRect(0,0, this.canvas.width, this.canvas.height);
 
         // iterate through each Bit object in the matrix and draw it
-        for(let i = 0; i < this._matrix.length; i++) {
-            for(let j = 0; j < this._matrix[i].length; j++) {
+        for (let i = 0; i < this._matrix.length; i++) {
+            for (let j = 0; j < this._matrix[i].length; j++) {
                 let currentBit = this._matrix[i][j];
 
                 // booleans indicating whether or not the current bit is at its maximum or minimum state

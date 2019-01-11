@@ -141,22 +141,53 @@ class BitMatrix {
         this.container = document.getElementById(containerId); // dom element with specified id
         this.container.appendChild(this.canvas); // attach canvas to container
 
-        // add each key of props object as key of this object
-        for(let key in props) {
-            this[key] = props[key];
-        }
-
         this._numRows = 0; // number of rows of matrix
         this._numCols = 0; // number of columns of matrix
         this._matrix = []; // 2d array containig Bit objects
 
         this._matrixBuilt = false; // set to true once _buildMatrix() is called
 
-        this._setupCanvas(this.textOptions, this.padding);
+        // if props is a string, try to read it in as a json file
+        if (typeof props === 'string') {
+            // initialize ref to this to maintain scope once inside callback
+            let ref = this;
+            // read in json file
+            this._readJSONFile(props, (json) => {
+                // parse raw json, setup object fields, and start canvas animation
+                ref._addPropsToObject(JSON.parse(json));
+                ref._start();
+            });
+        }
+        // if props is not a string, treat it as a json object
+        else {
+            // setup object fields and start canvas animation
+            this._addPropsToObject(props);
+            this._start();
+        }
+    }
+
+    // tries to read in "file" as a json file and return data via callback
+    _readJSONFile(file, callback) {
+        let jsonFile = new XMLHttpRequest();
+        jsonFile.overrideMimeType("application/json");
+        jsonFile.open("GET", file, true);
+        jsonFile.onreadystatechange = function() {
+            if (jsonFile.readyState === 4 && jsonFile.status == "200") {
+                callback(jsonFile.responseText);
+            }
+        }
+        jsonFile.send(null);
+    }
+
+    // add each key of props as key of this object
+    _addPropsToObject(props) {
+        for(let key in props) {
+            this[key] = props[key];
+        }
     }
 
     // sets canvas size, padding, and font
-    _setupCanvas(textOptions, padding) {
+    _setupCanvas() {
         // set canvas dimensions
         this.width = this.container.clientWidth;
         this.height = this.container.clientHeight;
@@ -168,16 +199,7 @@ class BitMatrix {
         this.canvas.style.height = this.height + 'px';
 
         // set text color
-        this.context.fillStyle = textOptions.textColor;
-
-        // store font attributes as fields
-        this.textOptions.fontFamily = textOptions.fontFamily;
-        this.textOptions.fontSizePx = textOptions.fontSizePx;
-        this.textOptions.fontWeight = textOptions.fontWeight;
-
-        // set padding between bits in matrix
-        this.padding.horizontal = padding.horizontal;
-        this.padding.vertical = padding.vertical;
+        this.context.fillStyle = this.textOptions.textColor;
 
         // _widthSpacing and _heightSpacing are distance between bits in pixels
         this._widthSpacing = this.textOptions.fontSizePx + this.padding.horizontal;
@@ -194,8 +216,9 @@ class BitMatrix {
         this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 
-    // build matrix and start canvas animation
-    start() {
+    // setup canvas, build matrix, and start canvas animation
+    _start() {
+        this._setupCanvas();
         this._buildMatrix();
         this._requestDraw();
     }
@@ -290,7 +313,7 @@ class BitMatrix {
     _draw() {
         // resize canvas and matrix if container has changed size
         if (this.container.clientWidth !== this.width || this.container.clientHeight !== this.height) {
-            this._setupCanvas(this.textOptions, this.padding);
+            this._setupCanvas();
             this._resizeMatrix();
         }
 

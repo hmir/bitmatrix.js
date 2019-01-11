@@ -8,11 +8,8 @@
         <script src="BitMatrix.js"></script>
         <script>
             let bmatrix = null;
-            function createMatrix() {
-                $.getJSON("BitMatrixProps.json", (json) => {                    
-                    bmatrix = new BitMatrix('matrix_container', json);
-                    bmatrix.start();
-                });
+            function createMatrix() {     
+                bmatrix = new BitMatrix('matrix_container', 'BitMatrixProps.json');
             }
         </script>
         <style> 

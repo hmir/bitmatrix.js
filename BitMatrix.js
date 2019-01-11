@@ -186,6 +186,9 @@ class BitMatrix {
 
     // sets canvas size, padding, and font
     _setupCanvas() {
+        // set frame duration in milliseconds
+        this.frameDuration = (1/this.fps) * 1000;
+
         // set canvas dimensions
         this.width = this.container.clientWidth;
         this.height = this.container.clientHeight;
@@ -355,10 +358,10 @@ class BitMatrix {
     _requestDraw() {
         // initialize ref to this to maintain scope once inside callback 
         let ref = this;
-        // request animation frame using _draw() method
-        window.requestAnimationFrame(() => {
+        // call _draw() method after number of milliseconds specified by frameDuration
+        setTimeout(() => {
             ref._draw();
-        });
+        }, this.frameDuration);
     }
 
     // generates 0 or 1 based on given bitValueOptions.initializeZeroProb

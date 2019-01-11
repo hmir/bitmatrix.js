@@ -1,4 +1,5 @@
 {
+  "fps": 20,
   "fadeOptions": {
     "minBitOpacity": 0,
     "maxBitOpacity": 1,

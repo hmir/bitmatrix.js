@@ -192,7 +192,7 @@ class BitMatrix {
         this.width = this.container.clientWidth;
         this.height = this.container.clientHeight;
 
-        // insures support for HiDPI screens
+        // scale canvas resolution based on device DPI
         this.canvas.width = this.width * window.devicePixelRatio;
         this.canvas.height = this.height * window.devicePixelRatio;
         this.canvas.style.width = this.width + 'px';
@@ -212,7 +212,7 @@ class BitMatrix {
         // set canvas font
         this.context.font = this.textOptions.fontWeight + ' ' + this.textOptions.fontSizePx + 'px ' + this.textOptions.fontFamily;
 
-        // this line is also necessary for supporting HiDPI screens
+        // scale canvas elements based on device DPI
         this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
 

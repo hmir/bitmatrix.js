@@ -4,7 +4,6 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>BitMatrix Test</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="BitMatrix.js"></script>
         <script>
             let bmatrix = null;
@@ -19,6 +18,7 @@
                 margin: 0px;
                 margin-top: 5px;
                 overflow: hidden;
+                background: black;
             }
             
             #matrix_container {
@@ -27,7 +27,7 @@
             }
         </style>
     </head>
-    <body onLoad="createMatrix()" bgcolor="#000000">
+    <body onLoad="createMatrix()">
         <div id="matrix_container"></div>
     </body>
 </html>

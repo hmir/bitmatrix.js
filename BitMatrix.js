@@ -134,7 +134,7 @@ class Bit {
 
 // contains the data for entire matrix drawn on the canvas
 class BitMatrix {
-    constructor(containerId, props) {
+    constructor(containerId, props, callback) {
         this.canvas = document.createElement('canvas'); // canvas to be drawn on
         this.context = this.canvas.getContext('2d'); // canvas context
 
@@ -161,6 +161,11 @@ class BitMatrix {
         else {
             // start canvas animation
             this._start(props);
+        }
+
+        // call callback after BitMatrix is constructed
+        if (callback) {
+            callback();
         }
     }
 

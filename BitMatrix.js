@@ -153,20 +153,18 @@ class BitMatrix {
             let ref = this;
             // read in json file
             this._readJSONFile(props, (json) => {
-                // parse raw json, setup object fields, and start canvas animation
-                ref._addPropsToObject(JSON.parse(json));
-                ref._start();
+                // parse raw json and start canvas animation
+                ref._start(JSON.parse(json));
             });
         }
         // if props is not a string, treat it as a json object
         else {
-            // setup object fields and start canvas animation
-            this._addPropsToObject(props);
-            this._start();
+            // start canvas animation
+            this._start(props);
         }
     }
 
-    // tries to read in "file" as a json file and return data via callback
+    // try to read in "file" as a json file and return data via callback
     _readJSONFile(file, callback) {
         let jsonFile = new XMLHttpRequest();
         jsonFile.overrideMimeType("application/json");
@@ -217,7 +215,8 @@ class BitMatrix {
     }
 
     // setup canvas, build matrix, and start canvas animation
-    _start() {
+    _start(props) {
+        this._addPropsToObject(props);
         this._setupCanvas();
         this._buildMatrix();
         this._requestDraw();

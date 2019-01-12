@@ -8,10 +8,15 @@
         <script>
             let bmatrix = null;
             function createMatrix() {     
+                /* BitMatrix constructor takes three parameters:
+                *    @containerId: ID of the parent dom element
+                *    @props: json options file path OR json object
+                *    @callback: callback executed after constructor is called (optional)
+                */
                 bmatrix = new BitMatrix('matrix_container', 'BitMatrixProps.json');
             }
         </script>
-        <style> 
+        <style>
             html, body {
                 width:  100%;
                 height: 100%;

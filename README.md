@@ -12,6 +12,8 @@
 new BitMatrix('matrix_container', 'BitMatrixProps.json');
 ```
 
+See test.html for a more in-depth example
+
 -------------------------------
 
 ### `Options`
